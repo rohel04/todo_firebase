@@ -15,6 +15,9 @@ class _SignupScreenState extends State<SignupScreen> {
   String? email='';
   String? password='';
   String? username='';
+  String? fullname='';
+  String? error='';
+  late int? validation;
 
 
 
@@ -23,12 +26,16 @@ class _SignupScreenState extends State<SignupScreen> {
 
     final authProvider=Provider.of<AuthService>(context);
 
-    startAuthentication(){
+    Future<void> startAuthentication() async{
       bool? validity= _formkey.currentState?.validate();
       if(validity!)
       {
         _formkey.currentState?.save();
-        authProvider.createWithEmailandPass(email!, password!, username!);
+        validation=0;
+        await authProvider.createWithEmailandPass(email!, password!, username!,fullname!);
+      }
+      else{
+        validation=1;
       }
 
     }
@@ -37,7 +44,7 @@ class _SignupScreenState extends State<SignupScreen> {
       body: SingleChildScrollView(
         child: SafeArea(
           child: Container(
-            padding: EdgeInsets.fromLTRB(15, 80, 15, 30),
+            padding: EdgeInsets.fromLTRB(15, 50, 15, 30),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -51,6 +58,29 @@ class _SignupScreenState extends State<SignupScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
+                        TextFormField(
+                          style: Theme.of(context).textTheme.bodyText1,
+                          keyboardType: TextInputType.text,
+                          key: ValueKey('fullname'),
+                          validator: (value){
+                            if(value!.isEmpty)
+                              {
+                                return 'Name is empty';
+                              }
+                          },
+                          onSaved: (value){
+                            fullname=value;
+                          },
+                          decoration: InputDecoration(
+                              enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(color: Colors.white)
+                              ),
+                              labelText: 'Full Name',
+                              labelStyle: Theme.of(context).textTheme.bodyText1
+                          ),
+                        ),
+                          SizedBox(height: 20),
                           TextFormField(
                             style: Theme.of(context).textTheme.bodyText1,
                             keyboardType: TextInputType.emailAddress,
@@ -75,7 +105,6 @@ class _SignupScreenState extends State<SignupScreen> {
                           ),
                         SizedBox(height: 20),
                         TextFormField(
-                          obscureText: true,
                           style: Theme.of(context).textTheme.bodyText1,
                           keyboardType: TextInputType.emailAddress,
                           key: ValueKey('username'),
@@ -99,6 +128,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         ),
                         SizedBox(height: 20),
                         TextFormField(
+                          obscureText: true,
                           style: Theme.of(context).textTheme.bodyText1,
                           keyboardType: TextInputType.emailAddress,
                           key: ValueKey('password'),
@@ -121,8 +151,20 @@ class _SignupScreenState extends State<SignupScreen> {
                           ),
                         ),
                         SizedBox(height: 20),
-                        ElevatedButton(onPressed: (){
-                          startAuthentication();
+                        ElevatedButton(onPressed: () async{
+                          await startAuthentication();
+                          if(authProvider.signUperror!='')
+                            {
+                              setState(() {
+                                error=authProvider.signUperror;
+                              });
+                            }
+                          if(authProvider.signUperror=='' && validation==0)
+                            {
+                              Navigator.pop(context);
+                            }
+
+
                         },
                             child: Text('Sign Up'),
                           style: ElevatedButton.styleFrom(
@@ -138,10 +180,17 @@ class _SignupScreenState extends State<SignupScreen> {
                                 Navigator.pop(context);
                               },
                               child: Text('Already a member?',style: Theme.of(context).textTheme.bodyText1),
-                            )
-
+                            ),
                           ],
-                        )
+
+                        ),
+                            SizedBox(height: 20),
+                            Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text('$error',style: TextStyle(color: Colors.redAccent))
+                                ]
+                            )
                       ],
                     ),
                    )

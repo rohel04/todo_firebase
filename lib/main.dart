@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:todo_firebase/screens/authentication/signUp.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_firebase/services/auth_service.dart';
+import 'package:todo_firebase/services/todo_service.dart';
 import 'package:todo_firebase/wrapper.dart';
 
 void main() async{
@@ -19,7 +20,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        Provider<AuthService>(create: (context)=>AuthService())
+        Provider<AuthService>(create: (context)=>AuthService()),
+        Provider<TodoService>(create: (context)=>TodoService())
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -37,8 +39,8 @@ class MyApp extends StatelessWidget {
             )
           ),
           textTheme: TextTheme(
-            headline1: TextStyle(fontSize: 30,fontWeight: FontWeight.bold),
-            bodyText1: TextStyle(),
+            headline1: TextStyle(fontSize: 25,fontWeight: FontWeight.bold,fontFamily: 'Oswald'),
+            bodyText1: TextStyle(fontFamily: 'Oswald'),
           ).apply(displayColor: Colors.white,bodyColor: Colors.white)
         ),
       ),

@@ -15,20 +15,19 @@ class _SigninScreenState extends State<SigninScreen> {
   final _formkey=GlobalKey<FormState>();
   String? email='';
   String? password='';
+  String? error='';
 
   @override
   Widget build(BuildContext context) {
 
     final authProvider=Provider.of<AuthService>(context);
-
-    startAuthentication(){
+    Future<void> startAuthentication() async{
       bool? validity= _formkey.currentState?.validate();
       if(validity!)
       {
         _formkey.currentState?.save();
-        authProvider.signWithEmailandPass(email!, password!);
+        await authProvider.signWithEmailandPass(email!, password!);
       }
-
     }
 
     return Scaffold(
@@ -40,7 +39,7 @@ class _SigninScreenState extends State<SigninScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text('Hello.',style: Theme.of(context).textTheme.headline1),
-                Text('Welcome back,',style:Theme.of(context).textTheme.headline1),
+                Text('Sign in to continue,',style:Theme.of(context).textTheme.headline1),
                 SizedBox(height: 20),
                 Container(
                     margin: EdgeInsets.fromLTRB(0, 30, 0, 0),
@@ -96,8 +95,14 @@ class _SigninScreenState extends State<SigninScreen> {
                             ),
                           ),
                           SizedBox(height: 20),
-                          ElevatedButton(onPressed: (){
-                            startAuthentication();
+                          ElevatedButton(onPressed: () async{
+                            await startAuthentication();
+                            if(authProvider.signInerror!='')
+                              {
+                                setState(() {
+                                  error=authProvider.signInerror;
+                                });
+                              }
                           },
                             child: Text('Sign In'),
                             style: ElevatedButton.styleFrom(
@@ -114,7 +119,15 @@ class _SigninScreenState extends State<SigninScreen> {
                                   },
                                   child:Text('Create account',style: Theme.of(context).textTheme.bodyText1)
                               ),
+                              SizedBox(height: 20),
                             ]
+                          ),
+                          SizedBox(height: 20),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text('$error',style: TextStyle(color: Colors.redAccent))
+                              ]
                           )
                         ],
                       ),
