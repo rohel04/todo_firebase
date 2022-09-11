@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:todo_firebase/screens/edit_todo.dart';
 
 class TodoWidget extends StatelessWidget {
   const TodoWidget({
@@ -34,6 +35,16 @@ class TodoWidget extends StatelessWidget {
                 child: CircularProgressIndicator()
             );
           }
+          else if(snapshot.data?.docs.length==0){
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                  children:[
+                    Text('Your list is empty!!',style: Theme.of(context).textTheme.bodyText1),
+                    Text('Plaese add some TODOs',style: Theme.of(context).textTheme.bodyText1)
+                  ])
+            );
+          }
           else{
             final data=snapshot.data?.docs;
             return GridView.builder(
@@ -46,26 +57,34 @@ class TodoWidget extends StatelessWidget {
                 itemCount: data?.length,
                 itemBuilder: (context,index){
                   var colorIndex=Random().nextInt(color.length);
-                  return Container(
-                    child: Card(
-                      elevation: 10,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)
-                      ),
-                      color: color[colorIndex],
-                      child: Container(
-                        padding: EdgeInsets.all(10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('${data?[index]['title']}',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16,fontFamily: 'Oswald')),
-                           SizedBox(height: 5),
-                            Text('${data?[index]['description']}',style: TextStyle(fontSize: 14,fontFamily: 'Oswald'))
-                          ],
+                  DocumentReference? info=snapshot.data!.docs[index].reference;
+                  return InkWell(
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>EditTodoPage(info: info,id: id,title: data?[index]['title'],desc: data?[index]['description'],)));
+                    },
+                    child: Container(
+                      child: Card(
+                        elevation: 10,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)
                         ),
-                      )
-                      ,
+                        color: color[colorIndex],
+                        child: SingleChildScrollView(
+                          child: Container(
+                            padding: EdgeInsets.all(10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('${data?[index]['title']}',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16,fontFamily: 'Oswald')),
+                               SizedBox(height: 5),
+                                Text('${data?[index]['description']}',style: TextStyle(fontSize: 14,fontFamily: 'Oswald'))
+                              ],
+                            ),
+                          ),
+                        )
+                        ,
 
+                      ),
                     ),
                   );
                 });

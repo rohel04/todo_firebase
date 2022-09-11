@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+
 import '../user.dart';
 
 class AuthService{
@@ -34,7 +35,7 @@ class AuthService{
           {
             signUperror='';
           }
-        await FirebaseFirestore.instance.collection('users').doc(id).set({'username':username,'email':email});
+        await FirebaseFirestore.instance.collection('users').doc(id).set({'fullname':fullname,'email':email});
         await FirebaseAuth.instance.currentUser?.updateDisplayName(username);
         await _firebaseAuth.currentUser?.reload();
         return _userFromFirebase(authResult.user);
@@ -81,6 +82,7 @@ class AuthService{
 
     Future<void> signOut() async
     {
+
       await _firebaseAuth.signOut();
     }
 
@@ -88,5 +90,12 @@ class AuthService{
       final user=_firebaseAuth.currentUser;
       final name=user?.displayName;
       return name;
+    }
+
+    Future<String?> getUserFullName() async{
+      final id=FirebaseAuth.instance.currentUser?.uid;
+      DocumentSnapshot info=await FirebaseFirestore.instance.collection('users').doc(id).get();
+      return info['fullname'];
+
     }
 }

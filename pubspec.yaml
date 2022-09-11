@@ -81,7 +81,7 @@ flutter:
   fonts:
     - family: Oswald
       fonts:
-        - asset: fonts/Oswald-VariableFont_wght.ttf
+        - asset: fonts/SourceSansPro-Regular.ttf
 
   #   - family: Trajan Pro
   #     fonts:

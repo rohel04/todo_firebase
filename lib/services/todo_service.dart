@@ -11,4 +11,20 @@ class TodoService{
 
   }
 
+  Future<void> edit_todo(String? title,String? desc,DocumentReference info) async{
+    Map<String,dynamic> newinfo={
+      'title':title,
+      'description':desc
+    };
+    await FirebaseFirestore.instance.runTransaction((Transaction transaction) async{
+     transaction.update(info, newinfo);
+    });
+  }
+
+  Future<void>  delete_todo(DocumentReference info) async{
+    await FirebaseFirestore.instance.runTransaction((transaction) async{
+      transaction.delete(info);
+    });
+  }
+
 }

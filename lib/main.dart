@@ -21,7 +21,8 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         Provider<AuthService>(create: (context)=>AuthService()),
-        Provider<TodoService>(create: (context)=>TodoService())
+        Provider<TodoService>(create: (context)=>TodoService()),
+
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -39,8 +40,8 @@ class MyApp extends StatelessWidget {
             )
           ),
           textTheme: TextTheme(
-            headline1: TextStyle(fontSize: 25,fontWeight: FontWeight.bold,fontFamily: 'Oswald'),
-            bodyText1: TextStyle(fontFamily: 'Oswald'),
+            headline1: TextStyle(fontSize: 30,fontWeight: FontWeight.bold,fontFamily: 'Oswald'),
+            bodyText1: TextStyle(fontFamily: 'Oswald',fontSize: 16),
           ).apply(displayColor: Colors.white,bodyColor: Colors.white)
         ),
       ),

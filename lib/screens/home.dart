@@ -28,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
     get_uid();
   }
 
-  get_uid()
+  get_uid() async
   {
     id=FirebaseAuth.instance.currentUser?.uid;
   }
@@ -50,14 +50,14 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-                Text('Hello,',style: Theme.of(context).textTheme.headline1),
+                Text('Hello',style: Theme.of(context).textTheme.headline1),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children:[
                 Text('Welcome ${authProvider.getUserName()}',style: Theme.of(context).textTheme.headline1),
                 ]
             ),
-            SizedBox(height: 15),
+            SizedBox(height: 10),
             Expanded(
               child: TodoWidget(id: id),
             )
